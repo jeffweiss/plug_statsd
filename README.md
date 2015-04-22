@@ -57,3 +57,14 @@ If you don't immediately have a statsd server available, you can run socat in a 
 ```shell
 $ socat UDP-RECV:8125 STDOUT
 ```
+
+You should see a series of output that looks something like
+
+```
+plug.timing.GET.messages:77|ms
+plug.count.GET.messages:1|c
+plug.timing.GET.messages.1:1|ms
+plug.count.GET.messages.1:1|c
+plug.timing.GET.messages.2:1|ms
+plug.count.GET.messages.2:1|c
+```
