@@ -1,0 +1,2 @@
+%{"ex_statsd": {:hex, :ex_statsd, "0.5.0"},
+  "plug": {:hex, :plug, "0.12.1"}}
