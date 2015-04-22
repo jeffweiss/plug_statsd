@@ -14,7 +14,7 @@ defmodule PlugStatsd.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :ex_statsd]]
+    [applications: [:logger, :plug, :ex_statsd]]
   end
 
   # Dependencies can be Hex packages:
