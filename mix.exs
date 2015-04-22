@@ -1,10 +1,17 @@
 defmodule PlugStatsd.Mixfile do
   use Mix.Project
 
+  @description """
+    A (Phoenix) plug for sending request counts and response times to statsd
+  """
+
   def project do
     [app: :plug_statsd,
-     version: "0.0.1",
+     version: "0.1.0",
      elixir: "~> 1.0",
+     name: "plug_statsd",
+     description: @description,
+     package: package,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]
@@ -30,5 +37,11 @@ defmodule PlugStatsd.Mixfile do
     [ {:plug, "~> 0.12.0"},
       {:ex_statsd, ">= 0.5.0"},
     ]
+  end
+
+  defp package do
+    [ contributors: ["Jeff Weiss"],
+      licenses: ["MIT"],
+      links: %{"Github" => "https://github.com/jeffweiss/plug_statsd"} ]
   end
 end
