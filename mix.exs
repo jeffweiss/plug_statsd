@@ -7,7 +7,7 @@ defmodule PlugStatsd.Mixfile do
 
   def project do
     [app: :plug_statsd,
-     version: "0.1.1",
+     version: "0.1.2",
      elixir: "~> 1.0",
      name: "plug_statsd",
      description: @description,
@@ -34,7 +34,7 @@ defmodule PlugStatsd.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [ {:plug, "~> 0.11.0"},
+    [ {:plug, ">= 0.11.0"},
       {:ex_statsd, ">= 0.5.0"},
     ]
   end
