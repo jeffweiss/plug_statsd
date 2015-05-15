@@ -49,10 +49,10 @@ config :ex_statsd,
        port: 1234,                   # This is optional and will default to 8125
        namespace: "your-app"         # This is optional and will default to nil
 config :plug_statsd,
-       sample_rate: 0.10,         # This is optional and will default to 1.0
+       sample_rate: 0.10,         # This is optional and will default to 1
        timing_sample_rate: 0.20,  # This is optional and will default to sample_rate
        request_sample_rate: 0.25, # This is optional and will default to sample_rate
-       response_sample_rate: 1.0  # This is optional and will default to sample_rate
+       response_sample_rate: 1  # This is optional and will default to sample_rate
 ```
 
 ## Seeing it in action

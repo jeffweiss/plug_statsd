@@ -1,7 +1,7 @@
 defmodule Plug.Statsd do
   require Logger
 
-  @sample_rate Application.get_env(:plug_statsd, :sample_rate, 1.0)
+  @sample_rate Application.get_env(:plug_statsd, :sample_rate, 1)
   @timing_sample_rate Application.get_env(:plug_statsd, :timing_sample_rate, @sample_rate)
   @request_sample_rate Application.get_env(:plug_statsd, :request_sample_rate, @sample_rate)
   @response_sample_rate Application.get_env(:plug_statsd, :response_sample_rate, @sample_rate)
