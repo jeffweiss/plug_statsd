@@ -45,14 +45,18 @@ Configure [ex_statsd](https://github.com/CargoSense/ex_statsd) (a dependency aut
 use Mix.Config
 
 config :ex_statsd,
-       host: "your.statsd.host.com", # This is optional and will default to 127.0.0.1
-       port: 1234,                   # This is optional and will default to 8125
-       namespace: "your-app"         # This is optional and will default to nil
+  host: "your.statsd.host.com", # This is optional and will default to 127.0.0.1
+  port: 1234,                   # This is optional and will default to 8125
+  namespace: "your-app"         # This is optional and will default to nil
 config :plug_statsd,
-       sample_rate: 0.10,         # This is optional and will default to 1
-       timing_sample_rate: 0.20,  # This is optional and will default to sample_rate
-       request_sample_rate: 0.25, # This is optional and will default to sample_rate
-       response_sample_rate: 1  # This is optional and will default to sample_rate
+  metrics: [
+    # custom_text.4xx.more_custom_text
+    {:timer, ["custom_text", :generalized_http_status, "more_custom_text"]},
+    # request.GET.api-v1-users-jeff=weiss
+    {:counter, ["request", :http_method, :uri], sample_rate: 0.1},
+  ],
+  slash_replacement: "-", # defaults to "."
+  dot_replacement: "="    # defaults to "_"
 ```
 
 ## Seeing it in action
@@ -66,11 +70,14 @@ $ socat UDP-RECV:8125 STDOUT
 Depending on your sample rates, you should see a series of output that looks something like
 
 ```
-timing.GET./:52|ms|@2.00
-request.GET./:1|c|@2.00
-response.2xx.200.GET./:1|c|@1.00
-request.GET./wat:1|c|@2.00
-response.4xx.404.GET./wat:1|c|@1.00
-timing.GET./lulz:0|ms|@2.00
-response.4xx.404.GET./lulz:1|c|@1.00
+custom_text.2xx.more_custom_text:27|ms
+request.GET.[root]:1|c
+custom_text.2xx.more_custom_text:18|ms
+request.GET.[root]:1|c
+custom_text.2xx.more_custom_text:32|ms
+request.GET.[root]:1|c
+custom_text.4xx.more_custom_text:1|ms
+request.GET.api-v1-users-jeff=weiss:1|c
+custom_text.4xx.more_custom_text:0|ms
+request.GET.api-v1-users-jeff=weiss:1|c
 ```

@@ -1,12 +1,9 @@
 defmodule Plug.Statsd do
   require Logger
 
-  @sample_rate Application.get_env(:plug_statsd, :sample_rate, 1)
-  @timing_sample_rate Application.get_env(:plug_statsd, :timing_sample_rate, @sample_rate)
-  @request_sample_rate Application.get_env(:plug_statsd, :request_sample_rate, @sample_rate)
-  @response_sample_rate Application.get_env(:plug_statsd, :response_sample_rate, @sample_rate)
   @slash_replacement Application.get_env(:plug_statsd, :slash_replacement, ".")
-  @period_replacement Application.get_env(:plug_statsd, :period_replacement, "_")
+  @dot_replacement Application.get_env(:plug_statsd, :dot_replacement, "_")
+  @metrics Application.get_env(:plug_statsd, :metrics, [ {:timer, ["response_code", :generalized_http_status]} ])
 
   def init(opts), do: Keyword.merge(default_options, opts)
   def call(conn, opts) do
@@ -25,58 +22,70 @@ defmodule Plug.Statsd do
     |> sanitize_uri(opts)
   end
 
-  defp sanitize_uri("/", opts) do
+  defp sanitize_uri("/", _opts) do
     "[root]"
   end
   defp sanitize_uri("/"<>uri, opts) do
-    period_replacement = Keyword.get(opts, :period_replacement)
+    dot_replacement = Keyword.get(opts, :dot_replacement)
     slash_replacement = Keyword.get(opts, :slash_replacement)
 
     uri
-    |> String.replace(".", period_replacement)
+    |> String.replace(".", dot_replacement)
     |> String.replace("/", slash_replacement)
   end
+
+  def http_method(conn, _opts) do
+    conn.method
+  end
+
+  def http_status(conn, _opts) do
+    conn.status
+  end
+
+  def generalized_http_status(conn, _opts) do
+    generalized_response_code(conn.status)
+  end
+
   defp default_options do
-    [ sample_rate: @sample_rate,
-      timing_sample_rate: @timing_sample_rate,
-      request_sample_rate: @request_sample_rate,
-      response_sample_rate: @response_sample_rate,
-      slash_replacement: @slash_replacement,
-      period_replacement: @period_replacement,
+    [ slash_replacement: @slash_replacement,
+      dot_replacement: @dot_replacement,
+      metrics: @metrics,
     ]
   end
 
   defp generalized_response_code(code) when is_integer(code), do: "#{div(code, 100)}xx"
   defp generalized_response_code(_code), do: "UNKNOWN"
 
-  defp metric_name(:response, conn, opts) do
-    [:response, generalized_response_code(conn.status), conn.status, conn.method, uri(conn, opts)]
-    |> List.flatten
-    |> Enum.join(".")
-  end
-  defp metric_name(type, conn, opts) do
-    [type, conn.method, uri(conn, opts)]
+  defp metric_name(elements, conn, opts) do
+    elements
+    |> Enum.map( &(element_to_value(&1, conn, opts)) )
     |> List.flatten
     |> Enum.join(".")
   end
 
-  defp send_metrics(conn, opts, delay) do
-    [:timing, :request, :response ]
-    |> Enum.each( fn (type) -> send_metric(type, conn, opts, delay) end)
+  defp element_to_value(element, conn, opts) when is_atom(element) do
+    apply(__MODULE__, element, [conn, opts])
+  end
+  defp element_to_value(element, _conn, _opts) do
+    element
+  end
+
+  defp send_metrics(conn, opts, elapsed) do
+    opts
+    |> Keyword.get(:metrics)
+    |> Enum.each( fn (definition) -> send_metric(definition, conn, opts, elapsed) end)
     conn
   end
 
-  defp sample_rate(opts, type) do
-    Keyword.get(opts, String.to_atom("#{type}_sample_rate"), Keyword.get(opts, :sample_rate))
+  defp send_metric({type, elements}, conn, opts, elapsed) do
+    send_metric({type, elements, sample_rate: 1}, conn, opts, elapsed)
   end
-
-  defp send_metric(type = :timing, conn, opts, delay) do
-    name = metric_name(type, conn, opts)
-    ExStatsD.timer(delay, name, sample_rate: sample_rate(opts, type))
+  defp send_metric({:timer, name_elements, sample_rate: rate}, conn, opts, elapsed) do
+    name = metric_name(name_elements, conn, opts)
+    ExStatsD.timer(elapsed, name, sample_rate: rate)
   end
-  defp send_metric(type, conn, opts, _timing) do
-    type
-    |> metric_name(conn, opts)
-    |> ExStatsD.increment(sample_rate: sample_rate(opts, type))
+  defp send_metric({:counter, name_elements, sample_rate: rate}, conn, opts, _elapsed) do
+    name = metric_name(name_elements, conn, opts)
+    ExStatsD.increment(name, sample_rate: rate)
   end
 end
