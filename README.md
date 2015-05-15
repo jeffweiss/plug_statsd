@@ -11,7 +11,7 @@ Add the plug as a dependency for your application.
 
 ```elixir
 defp deps do
-  [{:plug_statsd, ">= 0.1.3"}]
+  [{:plug_statsd, ">= 0.2.1"}]
 end
 ```
 
@@ -53,11 +53,13 @@ config :plug_statsd,
     # custom_text.4xx.more_custom_text
     {:timer, ["custom_text", :generalized_http_status, "more_custom_text"]},
     # request.GET.api-v1-users-jeff=weiss
-    {:counter, ["request", :http_method, :uri], sample_rate: 0.1},
+    {:counter, ["request", &Plug.Statsd.http_method/2, :uri], sample_rate: 0.1},
   ],
   slash_replacement: "-", # defaults to "."
   dot_replacement: "="    # defaults to "_"
 ```
+
+You can also add custom dynamic segments to your metric name by creating a 2-arity function that takes a `Plug.Conn` and a `Keyword` list.
 
 ## Seeing it in action
 

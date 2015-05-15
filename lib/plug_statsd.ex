@@ -66,6 +66,9 @@ defmodule Plug.Statsd do
   defp element_to_value(element, conn, opts) when is_atom(element) do
     apply(__MODULE__, element, [conn, opts])
   end
+  defp element_to_value(element, conn, opts) when is_function(element, 2) do
+    apply(element, [conn, opts])
+  end
   defp element_to_value(element, _conn, _opts) do
     element
   end

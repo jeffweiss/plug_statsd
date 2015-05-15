@@ -7,7 +7,7 @@ defmodule PlugStatsd.Mixfile do
 
   def project do
     [app: :plug_statsd,
-     version: "0.2.0",
+     version: "0.2.1",
      elixir: "~> 1.0",
      name: "plug_statsd",
      description: @description,
