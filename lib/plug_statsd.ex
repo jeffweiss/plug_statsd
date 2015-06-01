@@ -50,7 +50,8 @@ defmodule Plug.Statsd do
   defp default_options do
     [ slash_replacement: @slash_replacement,
       dot_replacement: @dot_replacement,
-      metrics: @metrics
+      metrics: @metrics,
+      backend: @backend
     ]
   end
 
@@ -87,21 +88,22 @@ defmodule Plug.Statsd do
   defp send_metric({:timer, name_elements, sample_rate: rate}, conn, opts, elapsed) do
     name = metric_name(name_elements, conn, opts)
 
-    backend.timing(name, elapsed, rate)
+    backend(opts).timing(name, elapsed, rate)
   end
   defp send_metric({:counter, name_elements, sample_rate: rate}, conn, opts, _elapsed) do
     name = metric_name(name_elements, conn, opts)
 
-    backend.increment(name, rate)
+    backend(opts).increment(name, rate)
   end
 
-  defp backend do
-    if @backend == :ex_statsd do
-      Plug.Statsd.ExStatsdBackend
-    else
-      Plug.Statsd.StatsderlBackend
-    else
-      raise ArgumentError, message: "Backend #{@backend} not found"
+  defp backend(opts) do
+    case Keyword.get(:backend) do
+      :ex_statsd ->
+        Plug.Statsd.ExStatsdBackend
+      :statsderl ->
+        Plug.Statsd.StatsderlBackend
+      true ->
+        raise ArgumentError, message: "Backend #{@backend} not found"
     end
   end
 end
