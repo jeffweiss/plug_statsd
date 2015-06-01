@@ -97,7 +97,7 @@ defmodule Plug.Statsd do
   end
 
   defp backend(opts) do
-    case Keyword.get(:backend) do
+    case Keyword.get(opts, :backend) do
       :ex_statsd ->
         Plug.Statsd.ExStatsdBackend
       :statsderl ->
