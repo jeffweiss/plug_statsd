@@ -4,6 +4,7 @@ defmodule Plug.Statsd do
   @slash_replacement Application.get_env(:plug_statsd, :slash_replacement, ".")
   @dot_replacement Application.get_env(:plug_statsd, :dot_replacement, "_")
   @metrics Application.get_env(:plug_statsd, :metrics, [ {:timer, ["response_code", :generalized_http_status]} ])
+  @backend Application.get_env(:plug_statsd, :backend, :ex_statsd)
 
   def init(opts), do: Keyword.merge(default_options, opts)
   def call(conn, opts) do
@@ -49,7 +50,7 @@ defmodule Plug.Statsd do
   defp default_options do
     [ slash_replacement: @slash_replacement,
       dot_replacement: @dot_replacement,
-      metrics: @metrics,
+      metrics: @metrics
     ]
   end
 
@@ -85,10 +86,22 @@ defmodule Plug.Statsd do
   end
   defp send_metric({:timer, name_elements, sample_rate: rate}, conn, opts, elapsed) do
     name = metric_name(name_elements, conn, opts)
-    ExStatsD.timer(elapsed, name, sample_rate: rate)
+
+    backend.timing(name, elapsed, rate)
   end
   defp send_metric({:counter, name_elements, sample_rate: rate}, conn, opts, _elapsed) do
     name = metric_name(name_elements, conn, opts)
-    ExStatsD.increment(name, sample_rate: rate)
+
+    backend.increment(name, rate)
+  end
+
+  defp backend do
+    if @backend == :ex_statsd do
+      Plug.Statsd.ExStatsdBackend
+    else
+      Plug.Statsd.StatsderlBackend
+    else
+      raise ArgumentError, message: "Backend #{@backend} not found"
+    end
   end
 end
