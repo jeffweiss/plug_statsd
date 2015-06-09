@@ -21,7 +21,7 @@ defmodule PlugStatsd.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :plug, :ex_statsd]]
+    [applications: [:logger, :plug]]
   end
 
   # Dependencies can be Hex packages:
@@ -34,8 +34,9 @@ defmodule PlugStatsd.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [ {:plug, ">= 0.11.0"},
+    [ {:plug, ">= 0.10.0"},
       {:ex_statsd, ">= 0.5.0"},
+      {:statsderl, github: "lpgauth/statsderl"}
     ]
   end
 
