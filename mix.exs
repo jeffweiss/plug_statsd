@@ -34,9 +34,9 @@ defmodule PlugStatsd.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [ {:plug, ">= 0.10.0"},
-      {:ex_statsd, ">= 0.5.0"},
-      {:statsderl, github: "lpgauth/statsderl"}
+    [ {:plug, ">= 0.11.0"},
+      {:ex_statsd, ">= 0.5.0", optional: true},
+      {:statsderl, github: "lpgauth/statsderl", optional: true}
     ]
   end
 
