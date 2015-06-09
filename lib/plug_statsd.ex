@@ -6,7 +6,11 @@ defmodule Plug.Statsd do
   @metrics Application.get_env(:plug_statsd, :metrics, [ {:timer, ["response_code", :generalized_http_status]} ])
   @backend Application.get_env(:plug_statsd, :backend, :ex_statsd)
 
-  def init(opts), do: Keyword.merge(default_options, opts)
+  def init(opts) do
+    merged_opts = Keyword.merge(default_options, opts)
+    {:ok, _} = :application.ensure_all_started(Keyword.get(merged_opts, :backend))
+    merged_opts
+  end
   def call(conn, opts) do
     before_time = :os.timestamp()
 
