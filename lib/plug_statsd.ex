@@ -23,7 +23,7 @@ defmodule Plug.Statsd do
   end
 
   def uri(conn, opts) do
-    Plug.Conn.full_path(conn)
+    conn.request_path
     |> sanitize_uri(opts)
   end
 
