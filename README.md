@@ -1,25 +1,35 @@
 PlugStatsd
 ==========
 
-## Usage
+## Description
 A plug for automatically sending
 timing and count metrics to [statsd](https://github.com/etsy/statsd).
 
+This plug can currently can use either of two statsd backends:
+ * [ex_statsd](https://github.com/CargoSense/ex_statsd)
+ * [statsderl](https://github.com/lpgauth/statsderl)
+
+If you have additional statsd clients you'd like added, please open an issue
+and let me know.
+
 ## Usage
 
-Add the plug as a dependency for your application.
+Add the plug and your chosen statsd backend as a dependencies for your application.
 
 ```elixir
 defp deps do
-  [{:plug_statsd, ">= 0.2.1"}]
+  [
+    {:plug_statsd, "~> 0.3"},
+    {:ex_statsd, "~> 0.5"},
+  ]
 end
 ```
 
-You should also update your applications list to include the statsd plug:
+You should also update your applications list to include the statsd plug and the backend:
 
 ```elixir
 def application do
-  [applications: [:plug_statsd]]
+  [applications: [:plug_statsd, :ex_statsd]]
 end
 ```
 
