@@ -1,10 +1,10 @@
 defmodule Plug.Statsd do
   require Logger
 
-  @slash_replacement Application.get_env(:plug_statsd, :slash_replacement, ".")
-  @dot_replacement Application.get_env(:plug_statsd, :dot_replacement, "_")
-  @metrics Application.get_env(:plug_statsd, :metrics, [ {:timer, ["response_code", :generalized_http_status]} ])
-  @backend Application.get_env(:plug_statsd, :backend, :ex_statsd)
+  @slash_replacement "."
+  @dot_replacement "_"
+  @metrics [ {:timer, ["response_code", :generalized_http_status]} ]
+  @backend :ex_statsd
 
   def init(opts) do
     Keyword.merge(default_options, opts)
@@ -50,10 +50,10 @@ defmodule Plug.Statsd do
   end
 
   defp default_options do
-    [ slash_replacement: @slash_replacement,
-      dot_replacement: @dot_replacement,
-      metrics: @metrics,
-      backend: @backend
+    [ slash_replacement: Application.get_env(:plug_statsd, :slash_replacement, @slash_replacement),
+      dot_replacement: Application.get_env(:plug_statsd, :dot_replacement, @dot_replacement ),
+      metrics: Application.get_env(:plug_statsd, :metrics, @metrics),
+      backend: Application.get_env(:plug_statsd, :backend, @backend)
     ]
   end
 
