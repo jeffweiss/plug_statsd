@@ -41,7 +41,7 @@ defmodule PlugStatsd.Mixfile do
   end
 
   defp package do
-    [ contributors: ["Jeff Weiss"],
+    [ maintainers: ["Jeff Weiss"],
       licenses: ["MIT"],
       links: %{"Github" => "https://github.com/jeffweiss/plug_statsd"} ]
   end
