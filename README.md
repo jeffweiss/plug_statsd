@@ -48,7 +48,7 @@ defmodule Chat.Endpoint do
 end
 ```
 
-Configure [ex_statsd](https://github.com/CargoSense/ex_statsd) (a dependency automatically pulled) using `Mix.Config` as usual (probably in your
+Configure your statsd backend ([ex_statsd](https://github.com/CargoSense/ex_statsd) or [statderl](https://github.com/lpgauth/statsderl)) using `Mix.Config` as usual (probably in your
 `config/`):
 
 ```elixir
