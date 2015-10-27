@@ -25,10 +25,9 @@ defmodule Plug.Statsd do
     |> sanitize_uri(opts)
   end
 
-  defp sanitize_uri("/", _opts) do
-    "[root]"
-  end
-  defp sanitize_uri("/"<>uri, opts) do
+  defp sanitize_uri("/", _opts), do: "[root]"
+  defp sanitize_uri("/"<>uri, opts), do: sanitize_uri(uri, opts)
+  defp sanitize_uri(uri, opts) do
     dot_replacement = Keyword.get(opts, :dot_replacement)
     slash_replacement = Keyword.get(opts, :slash_replacement)
 
