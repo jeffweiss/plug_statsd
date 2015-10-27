@@ -66,6 +66,9 @@ defmodule Plug.Statsd do
     |> Enum.join(".")
   end
 
+  defp element_to_value({module, function}, conn, opts) when is_atom(module) and is_atom(function) do
+    apply(module, function, [conn, opts])
+  end
   defp element_to_value(element, conn, opts) when is_atom(element) do
     apply(__MODULE__, element, [conn, opts])
   end
