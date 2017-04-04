@@ -99,6 +99,11 @@ defmodule Plug.Statsd do
 
     backend(opts).increment(name, rate)
   end
+  defp send_metric({:histogram, name_elements, sample_rate: rate}, conn, opts, _elapsed) do
+    name = metric_name(name_elements, conn, opts)
+
+    backend(opts).histogram(name, rate)
+  end
 
   defp backend(opts) do
     case Keyword.get(opts, :backend) do
