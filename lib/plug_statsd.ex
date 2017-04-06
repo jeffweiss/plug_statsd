@@ -15,7 +15,7 @@ defmodule Plug.Statsd do
     conn
     |> Plug.Conn.register_before_send( fn conn ->
       after_time = :os.timestamp()
-      diff = div(:timer.now_diff(after_time, before_time), 1000)
+      diff = :timer.now_diff(after_time, before_time) / 1000.0
       send_metrics(conn, opts, diff)
       end)
   end
