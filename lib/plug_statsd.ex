@@ -111,6 +111,8 @@ defmodule Plug.Statsd do
         Plug.Statsd.ExStatsdBackend
       :statsderl ->
         Plug.Statsd.StatsderlBackend
+      :nullstats ->
+        Plug.Statsd.NullStatsdBackend
       true ->
         raise ArgumentError, message: "Backend #{@backend} not found"
     end
