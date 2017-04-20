@@ -3,6 +3,7 @@ defmodule Plug.Statsd do
 
   @slash_replacement "."
   @dot_replacement "_"
+  @root_replacement "[root]"
   @metrics [ {:timer, ["response_code", :generalized_http_status]} ]
   @backend :ex_statsd
 
@@ -25,7 +26,7 @@ defmodule Plug.Statsd do
     |> sanitize_uri(opts)
   end
 
-  defp sanitize_uri("/", _opts), do: "[root]"
+  defp sanitize_uri("/", opts), do: Keyword.get(opts, :root_replacement)
   defp sanitize_uri("/"<>uri, opts), do: sanitize_uri(uri, opts)
   defp sanitize_uri(uri, opts) do
     dot_replacement = Keyword.get(opts, :dot_replacement)
@@ -51,6 +52,7 @@ defmodule Plug.Statsd do
   defp default_options do
     [ slash_replacement: Application.get_env(:plug_statsd, :slash_replacement, @slash_replacement),
       dot_replacement: Application.get_env(:plug_statsd, :dot_replacement, @dot_replacement ),
+      root_replacement: Application.get_env(:plug_statsd, :root_replacement, @root_replacement ),
       metrics: Application.get_env(:plug_statsd, :metrics, @metrics),
       backend: Application.get_env(:plug_statsd, :backend, @backend)
     ]
