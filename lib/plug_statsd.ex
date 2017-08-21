@@ -8,7 +8,7 @@ defmodule Plug.Statsd do
   @backend :ex_statsd
 
   def init(opts) do
-    Keyword.merge(default_options, opts)
+    Keyword.merge(default_options(), opts)
   end
   def call(conn, opts) do
     before_time = :os.timestamp()
