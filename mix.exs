@@ -36,7 +36,8 @@ defmodule PlugStatsd.Mixfile do
   defp deps do
     [ {:plug, "~> 1.1"},
       {:ex_statsd, "~> 0.5", optional: true},
-      {:statsderl, "~> 0.5", optional: true}
+      {:statsderl, "~> 0.5", optional: true},
+      {:ex_doc, ">= 0.0.0", only: :dev},
     ]
   end
 
