@@ -36,7 +36,7 @@ defmodule PlugStatsd.Mixfile do
   defp deps do
     [ {:plug, "~> 1.1"},
       {:ex_statsd, "~> 0.5", optional: true},
-      {:statsderl, github: "lpgauth/statsderl", optional: true}
+      {:statsderl, "~> 0.5", optional: true}
     ]
   end
 

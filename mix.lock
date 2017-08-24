@@ -1,4 +1,6 @@
 %{"ex_statsd": {:hex, :ex_statsd, "0.5.3", "e86dd97e25dbc80786e7d22b3c5537f2052a7e12daaaa7e6f2b9c34d03dbbd44", [], [], "hexpm"},
+  "granderl": {:hex, :granderl, "0.1.5", "f20077a68bd80b8d8783bd15a052813c6483771dec1a5b837d307cbe92f14122", [], [], "hexpm"},
   "mime": {:hex, :mime, "1.1.0", "01c1d6f4083d8aa5c7b8c246ade95139620ef8effb009edde934e0ec3b28090a", [], [], "hexpm"},
+  "parse_trans": {:hex, :parse_trans, "3.0.0", "9e96b1c9c3a0df54e7b76f8f685d38bfa1eb21b31e042b1d1a5a70258e4db1e3", [], [], "hexpm"},
   "plug": {:hex, :plug, "1.4.3", "236d77ce7bf3e3a2668dc0d32a9b6f1f9b1f05361019946aae49874904be4aed", [:mix], [{:cowboy, "~> 1.0.1 or ~> 1.1", [hex: :cowboy, repo: "hexpm", optional: true]}, {:mime, "~> 1.0", [hex: :mime, repo: "hexpm", optional: false]}], "hexpm"},
-  "statsderl": {:git, "https://github.com/lpgauth/statsderl.git", "9265c3d485dd80d3124082d53bbd41678822ec30", []}}
+  "statsderl": {:hex, :statsderl, "0.5.2", "9fbe68445da83a86e2509d007823e94cb8a71561f0428058bd5abe9b62386a32", [:rebar3], [{:granderl, "0.1.5", [hex: :granderl, repo: "hexpm", optional: false]}, {:parse_trans, "3.0.0", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm"}}
