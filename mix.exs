@@ -11,10 +11,10 @@ defmodule PlugStatsd.Mixfile do
      elixir: "~> 1.0",
      name: "plug_statsd",
      description: @description,
-     package: package,
+     package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
