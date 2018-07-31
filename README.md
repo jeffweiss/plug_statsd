@@ -5,9 +5,10 @@ PlugStatsd
 A plug for automatically sending
 timing and count metrics to [statsd](https://github.com/etsy/statsd).
 
-This plug can currently can use either of two statsd backends:
+This plug can currently can use any of these statsd backends:
  * [ex_statsd](https://github.com/CargoSense/ex_statsd)
  * [statsderl](https://github.com/lpgauth/statsderl)
+ * [statix](https://github.com/lexmag/statix)
 
 If you have additional statsd clients you'd like added, please open an [issue](https://github.com/jeffweiss/plug_statsd/issues/new)
 and let me know.
@@ -40,7 +41,7 @@ defmodule Chat.Endpoint do
 ...
 
   plug Plug.Logger
-  
+
   #send connection request timing and counts to statsd
   plug Plug.Statsd
 

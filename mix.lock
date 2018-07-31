@@ -1,3 +1,11 @@
-%{"ex_statsd": {:hex, :ex_statsd, "0.5.3"},
-  "plug": {:hex, :plug, "1.1.3"},
-  "statsderl": {:git, "https://github.com/lpgauth/statsderl.git", "9265c3d485dd80d3124082d53bbd41678822ec30", []}}
+%{
+  "earmark": {:hex, :earmark, "1.2.3", "206eb2e2ac1a794aa5256f3982de7a76bf4579ff91cb28d0e17ea2c9491e46a4", [:mix], [], "hexpm"},
+  "ex_doc": {:hex, :ex_doc, "0.16.3", "cd2a4cfe5d26e37502d3ec776702c72efa1adfa24ed9ce723bb565f4c30bd31a", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, repo: "hexpm", optional: false]}], "hexpm"},
+  "ex_statsd": {:hex, :ex_statsd, "0.5.3", "e86dd97e25dbc80786e7d22b3c5537f2052a7e12daaaa7e6f2b9c34d03dbbd44", [], [], "hexpm"},
+  "granderl": {:hex, :granderl, "0.1.5", "f20077a68bd80b8d8783bd15a052813c6483771dec1a5b837d307cbe92f14122", [:rebar3], [], "hexpm"},
+  "mime": {:hex, :mime, "1.1.0", "01c1d6f4083d8aa5c7b8c246ade95139620ef8effb009edde934e0ec3b28090a", [:mix], [], "hexpm"},
+  "parse_trans": {:hex, :parse_trans, "3.0.0", "9e96b1c9c3a0df54e7b76f8f685d38bfa1eb21b31e042b1d1a5a70258e4db1e3", [:rebar3], [], "hexpm"},
+  "plug": {:hex, :plug, "1.4.3", "236d77ce7bf3e3a2668dc0d32a9b6f1f9b1f05361019946aae49874904be4aed", [:mix], [{:cowboy, "~> 1.0.1 or ~> 1.1", [hex: :cowboy, repo: "hexpm", optional: true]}, {:mime, "~> 1.0", [hex: :mime, repo: "hexpm", optional: false]}], "hexpm"},
+  "statix": {:hex, :statix, "1.1.0", "af9a4586c5cd58f879e0595f06a4790878715de5b8f75f6346693aaa38da2424", [:mix], [], "hexpm"},
+  "statsderl": {:hex, :statsderl, "0.5.2", "9fbe68445da83a86e2509d007823e94cb8a71561f0428058bd5abe9b62386a32", [:rebar3], [{:granderl, "0.1.5", [hex: :granderl, repo: "hexpm", optional: false]}, {:parse_trans, "3.0.0", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm"},
+}

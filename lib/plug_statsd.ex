@@ -3,21 +3,23 @@ defmodule Plug.Statsd do
 
   @slash_replacement "."
   @dot_replacement "_"
-  @metrics [ {:timer, ["response_code", :generalized_http_status]} ]
+  @root_replacement "[root]"
+  @metrics [{:timer, ["response_code", :generalized_http_status]}]
   @backend :ex_statsd
 
   def init(opts) do
-    Keyword.merge(default_options, opts)
+    Keyword.merge(default_options(), opts)
   end
+
   def call(conn, opts) do
     before_time = :os.timestamp()
 
     conn
-    |> Plug.Conn.register_before_send( fn conn ->
+    |> Plug.Conn.register_before_send(fn conn ->
       after_time = :os.timestamp()
       diff = :timer.now_diff(after_time, before_time) / 1000.0
       send_metrics(conn, opts, diff)
-      end)
+    end)
   end
 
   def uri(conn, opts) do
@@ -25,8 +27,9 @@ defmodule Plug.Statsd do
     |> sanitize_uri(opts)
   end
 
-  defp sanitize_uri("/", _opts), do: "[root]"
-  defp sanitize_uri("/"<>uri, opts), do: sanitize_uri(uri, opts)
+  defp sanitize_uri("/", opts), do: Keyword.get(opts, :root_replacement)
+  defp sanitize_uri("/" <> uri, opts), do: sanitize_uri(uri, opts)
+
   defp sanitize_uri(uri, opts) do
     dot_replacement = Keyword.get(opts, :dot_replacement)
     slash_replacement = Keyword.get(opts, :slash_replacement)
@@ -49,8 +52,11 @@ defmodule Plug.Statsd do
   end
 
   defp default_options do
-    [ slash_replacement: Application.get_env(:plug_statsd, :slash_replacement, @slash_replacement),
-      dot_replacement: Application.get_env(:plug_statsd, :dot_replacement, @dot_replacement ),
+    [
+      slash_replacement:
+        Application.get_env(:plug_statsd, :slash_replacement, @slash_replacement),
+      dot_replacement: Application.get_env(:plug_statsd, :dot_replacement, @dot_replacement),
+      root_replacement: Application.get_env(:plug_statsd, :root_replacement, @root_replacement),
       metrics: Application.get_env(:plug_statsd, :metrics, @metrics),
       backend: Application.get_env(:plug_statsd, :backend, @backend)
     ]
@@ -61,20 +67,24 @@ defmodule Plug.Statsd do
 
   defp metric_name(elements, conn, opts) do
     elements
-    |> Enum.map( &(element_to_value(&1, conn, opts)) )
-    |> List.flatten
+    |> Enum.map(&element_to_value(&1, conn, opts))
+    |> List.flatten()
     |> Enum.join(".")
   end
 
-  defp element_to_value({module, function}, conn, opts) when is_atom(module) and is_atom(function) do
+  defp element_to_value({module, function}, conn, opts)
+       when is_atom(module) and is_atom(function) do
     apply(module, function, [conn, opts])
   end
+
   defp element_to_value(element, conn, opts) when is_atom(element) do
     apply(__MODULE__, element, [conn, opts])
   end
+
   defp element_to_value(element, conn, opts) when is_function(element, 2) do
     apply(element, [conn, opts])
   end
+
   defp element_to_value(element, _conn, _opts) do
     element
   end
@@ -82,23 +92,27 @@ defmodule Plug.Statsd do
   defp send_metrics(conn, opts, elapsed) do
     opts
     |> Keyword.get(:metrics)
-    |> Enum.each( fn (definition) -> send_metric(definition, conn, opts, elapsed) end)
+    |> Enum.each(fn definition -> send_metric(definition, conn, opts, elapsed) end)
+
     conn
   end
 
   defp send_metric({type, elements}, conn, opts, elapsed) do
     send_metric({type, elements, sample_rate: 1}, conn, opts, elapsed)
   end
+
   defp send_metric({:timer, name_elements, sample_rate: rate}, conn, opts, elapsed) do
     name = metric_name(name_elements, conn, opts)
 
     backend(opts).timing(name, elapsed, rate)
   end
+
   defp send_metric({:counter, name_elements, sample_rate: rate}, conn, opts, _elapsed) do
     name = metric_name(name_elements, conn, opts)
 
     backend(opts).increment(name, rate)
   end
+
   defp send_metric({:histogram, name_elements, sample_rate: rate}, conn, opts, elapsed) do
     name = metric_name(name_elements, conn, opts)
 
@@ -109,10 +123,16 @@ defmodule Plug.Statsd do
     case Keyword.get(opts, :backend) do
       :ex_statsd ->
         Plug.Statsd.ExStatsdBackend
+
       :statsderl ->
         Plug.Statsd.StatsderlBackend
+
       :nullstats ->
         Plug.Statsd.NullStatsdBackend
+
+      :statix ->
+        Plug.Statsd.StatixBackend
+
       true ->
         raise ArgumentError, message: "Backend #{@backend} not found"
     end
