@@ -1,6 +1,5 @@
 if Code.ensure_loaded?(Statix) do
   defmodule Plug.Statsd.StatixBackend do
-
     def increment(name, 1) do
       increment(name, 1.0)
     end
@@ -15,6 +14,12 @@ if Code.ensure_loaded?(Statix) do
 
     def timing(name, elapsed, rate) when is_float(rate) do
       get_conn().timing(name, elapsed, sample_rate: rate)
+    end
+
+    def histogram(name, elapsed, 1), do: histogram(name, elapsed, 1.0)
+
+    def histogram(name, elapsed, rate) when is_float(rate) do
+      get_conn().histogram(name, elapsed, sample_rate: rate)
     end
 
     defp get_conn do
